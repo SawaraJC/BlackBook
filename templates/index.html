@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power Cut Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Power Cut Prediction</h1>
+        <p>Predict the power consumption required for your locality.</p>
+        <form id="predictionForm" class="form">
+            <label for="locality">Enter Locality:</label>
+            <input type="text" id="locality" name="locality" placeholder="e.g., Downtown" required>
+            <button type="submit">Predict</button>
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById("predictionForm").onsubmit = async function(event) {
+            event.preventDefault();
+            const locality = document.getElementById("locality").value;
+
+            const response = await fetch("/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ locality: locality })
+            });
+            const result = await response.json();
+            document.getElementById("result").innerText = `Predicted Power Consumption for ${result.locality}: ${result.predicted_power} kW`;
+        };
+    </script>
+</body>
+</html>
